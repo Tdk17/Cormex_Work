@@ -203,8 +203,26 @@ class _AuthPageState extends State<AuthPage> {
                       if (registering) ...[
                         const SizedBox(height: 12),
                         if (!AppConfig.canRegister)
-                          const Text(
-                            'Cadastro indisponível até a publicação dos Termos e da Privacidade.',
+                          Container(
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: CormexTheme.pale,
+                              border: Border.all(color: CormexTheme.sage),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(Icons.info_outline_rounded,
+                                    color: CormexTheme.forest, size: 20),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    'O cadastro será liberado após a publicação dos Termos e do Aviso de Privacidade.',
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         if (AppConfig.canRegister) ...[
                           Wrap(
@@ -249,6 +267,15 @@ class _AuthPageState extends State<AuthPage> {
                       ],
                       const SizedBox(height: 20),
                       FilledButton(
+                        style: ButtonStyle(
+                          side: WidgetStateProperty.resolveWith((states) =>
+                              BorderSide(
+                                color: states.contains(WidgetState.disabled)
+                                    ? CormexTheme.muted
+                                    : CormexTheme.forest,
+                                width: 1.6,
+                              )),
+                        ),
                         onPressed: busy ||
                                 (registering && !AppConfig.canRegister)
                             ? null
@@ -287,13 +314,19 @@ class _AuthPageState extends State<AuthPage> {
                                   const TextStyle(color: CormexTheme.muted),
                             ),
                           ),
-                          TextButton(
+                          OutlinedButton(
                             onPressed: () => context.go((registering
                                     ? '/login'
                                     : '/register') +
                                 (widget.from == null
                                     ? ''
                                     : '?from=${Uri.encodeComponent(widget.from!)}')),
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                color: CormexTheme.forest,
+                                width: 1.5,
+                              ),
+                            ),
                             child: Text(
                               registering ? 'Entrar' : 'Criar conta',
                             ),
