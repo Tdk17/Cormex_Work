@@ -13,7 +13,12 @@ class AppConfig {
 
   static bool get isConfigured =>
       serverUrl.startsWith('https://') &&
-      applicationId.isNotEmpty &&
+      applicationId.isNotEmpty;
+
+  static bool get canRegister =>
+      isConfigured &&
       termsVersion.isNotEmpty &&
-      privacyVersion.isNotEmpty;
+      privacyVersion.isNotEmpty &&
+      termsUrl.startsWith('https://') &&
+      privacyUrl.startsWith('https://');
 }

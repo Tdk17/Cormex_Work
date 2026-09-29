@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../app/theme.dart';
 import '../../core/config/app_config.dart';
 import '../../core/di/registry.dart';
 import '../../core/auth/session_store.dart';
@@ -91,15 +92,43 @@ class _AuthPageState extends State<AuthPage> {
       child: Center(
         child: SingleChildScrollView(
           child: PageWidth(
-            maxWidth: 500,
+            maxWidth: 560,
             child: Card(
               child: Padding(
-                padding: const EdgeInsets.all(28),
+                padding: EdgeInsets.all(
+                  MediaQuery.sizeOf(context).width < 600 ? 25 : 38,
+                ),
                 child: Form(
                   key: form,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: CormexTheme.pale,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: const Icon(
+                            Icons.lock_outline_rounded,
+                            color: CormexTheme.forest,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      const Text(
+                        'ACESSO À PLATAFORMA',
+                        style: TextStyle(
+                          color: CormexTheme.forest,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.5,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
                       Text(
                         resetting
                             ? 'Recuperar senha'
@@ -108,13 +137,13 @@ class _AuthPageState extends State<AuthPage> {
                                 : 'Entre na sua conta',
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 10),
                       Text(
                         resetting
                             ? 'Enviaremos instruções se este e-mail estiver cadastrado.'
                             : 'Sua operação começa com dados reais e uma agenda organizada.',
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 30),
                       if (registering) ...[
                         TextFormField(
                           controller: name,
@@ -154,13 +183,11 @@ class _AuthPageState extends State<AuthPage> {
                       ],
                       if (registering) ...[
                         const SizedBox(height: 12),
-                        if (AppConfig.termsUrl.isEmpty ||
-                            AppConfig.privacyUrl.isEmpty)
+                        if (!AppConfig.canRegister)
                           const Text(
                             'Cadastro indisponível até a publicação dos Termos e da Privacidade.',
                           ),
-                        if (AppConfig.termsUrl.isNotEmpty &&
-                            AppConfig.privacyUrl.isNotEmpty) ...[
+                        if (AppConfig.canRegister) ...[
                           Wrap(
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
@@ -204,9 +231,7 @@ class _AuthPageState extends State<AuthPage> {
                       const SizedBox(height: 20),
                       FilledButton(
                         onPressed: busy ||
-                                (registering &&
-                                    (AppConfig.termsUrl.isEmpty ||
-                                        AppConfig.privacyUrl.isEmpty))
+                                (registering && !AppConfig.canRegister)
                             ? null
                             : submit,
                         child: Text(

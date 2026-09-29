@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../app/theme.dart';
 import '../../core/auth/session_store.dart';
 import '../../core/di/registry.dart';
 import '../../core/network/api_client.dart';
@@ -75,6 +76,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 18),
+                const Text(
+                  'CONFIGURAÇÃO INICIAL',
+                  style: TextStyle(
+                    color: CormexTheme.forest,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 12),
                 Text(
                   'Sua empresa no Cormex Work',
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -86,7 +97,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 const SizedBox(height: 18),
                 Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(28),
                     child: Form(
                       key: form,
                       child: Column(
@@ -245,6 +256,17 @@ class _PlanPageState extends State<PlanPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 20),
+            const Text(
+              'SEU ACESSO',
+              style: TextStyle(
+                color: CormexTheme.forest,
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.5,
+              ),
+            ),
+            const SizedBox(height: 10),
             Text(
               'Escolha seu plano',
               style: Theme.of(context).textTheme.headlineMedium,
@@ -280,6 +302,19 @@ class _PlanPageState extends State<PlanPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    color: CormexTheme.pale,
+                                    borderRadius: BorderRadius.circular(13),
+                                  ),
+                                  child: const Icon(
+                                    Icons.layers_outlined,
+                                    color: CormexTheme.forest,
+                                  ),
+                                ),
+                                const SizedBox(height: 22),
                                 Text(
                                   plan['name'].toString(),
                                   style: Theme.of(context).textTheme.titleLarge,

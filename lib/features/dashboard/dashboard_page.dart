@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/theme.dart';
 import '../../core/auth/session_store.dart';
 import '../../core/di/registry.dart';
 import '../../core/network/api_client.dart';
@@ -29,10 +30,45 @@ class _DashboardPageState extends State<DashboardPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            Text('Sua operação',
-                style: Theme.of(context).textTheme.headlineMedium),
-            const SizedBox(height: 6),
-            const Text('Reservas e atividades que vieram do servidor.'),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(30),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [CormexTheme.deep, CormexTheme.petroleum],
+                ),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'VISÃO GERAL',
+                    style: TextStyle(
+                      color: CormexTheme.sage,
+                      fontSize: 11,
+                      letterSpacing: 1.7,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  SizedBox(height: 11),
+                  Text(
+                    'Sua operação em foco.',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 29,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.7,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Acompanhe reservas e atividades com dados do servidor.',
+                    style: TextStyle(color: Color(0xFFC5D6D2)),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 24),
             RemoteData(
               future: future,
@@ -72,11 +108,13 @@ class _DashboardPageState extends State<DashboardPage> {
                         _Metric(
                           label: 'Reservas do dia',
                           value: summary['total'].toString(),
+                          icon: Icons.calendar_today_outlined,
                         ),
                         _Metric(
                           label: 'Confirmadas',
                           value: (summary['byStatus']?['confirmed'] ?? 0)
                               .toString(),
+                          icon: Icons.check_circle_outline_rounded,
                         ),
                         _Metric(
                           label: 'Canceladas',
@@ -87,6 +125,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                           ?['canceled_by_business'] ??
                                       0))
                               .toString(),
+                          icon: Icons.event_busy_outlined,
                         ),
                       ],
                     ),
@@ -122,20 +161,40 @@ class _DashboardPageState extends State<DashboardPage> {
 }
 
 class _Metric extends StatelessWidget {
-  const _Metric({required this.label, required this.value});
+  const _Metric({
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
   final String label, value;
+  final IconData icon;
   @override
   Widget build(BuildContext context) => SizedBox(
-        width: 230,
+        width: MediaQuery.sizeOf(context).width < 600
+            ? MediaQuery.sizeOf(context).width - 36
+            : 235,
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(22),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label),
-                const SizedBox(height: 8),
-                Text(value, style: Theme.of(context).textTheme.headlineMedium),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        label,
+                        style: const TextStyle(color: CormexTheme.muted),
+                      ),
+                    ),
+                    Icon(icon, size: 21, color: CormexTheme.forest),
+                  ],
+                ),
+                const SizedBox(height: 18),
+                Text(
+                  value,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
               ],
             ),
           ),

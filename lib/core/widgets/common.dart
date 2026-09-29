@@ -14,26 +14,45 @@ class Brand extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: 38,
+            height: 38,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: CormexTheme.gold,
-              borderRadius: BorderRadius.circular(10),
+              color: light ? CormexTheme.sage : CormexTheme.petroleum,
+              borderRadius: BorderRadius.circular(11),
             ),
-            child: const Icon(
-              Icons.grid_view_rounded,
-              color: Colors.white,
-              size: 21,
+            child: Text(
+              'W',
+              style: TextStyle(
+                color: light ? CormexTheme.deep : Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -1.5,
+              ),
             ),
           ),
-          const SizedBox(width: 10),
-          Text(
-            'Cormex Work',
-            style: TextStyle(
-              fontSize: 19,
-              fontWeight: FontWeight.w800,
-              color: light ? Colors.white : CormexTheme.navy,
+          const SizedBox(width: 11),
+          RichText(
+            text: TextSpan(
+              style: const TextStyle(
+                fontSize: 19,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.5,
+              ),
+              children: [
+                TextSpan(
+                  text: 'Cormex ',
+                  style: TextStyle(
+                    color: light ? Colors.white : CormexTheme.deep,
+                  ),
+                ),
+                TextSpan(
+                  text: 'Work',
+                  style: TextStyle(
+                    color: light ? CormexTheme.sage : CormexTheme.forest,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -46,8 +65,19 @@ class PublicFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          toolbarHeight: 72,
-          title: InkWell(onTap: () => context.go('/'), child: const Brand()),
+          toolbarHeight: 76,
+          title: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () => context.go('/'),
+            child: const Brand(),
+          ),
+          bottom: const PreferredSize(
+            preferredSize: Size.fromHeight(1),
+            child: SizedBox(
+              height: 1,
+              child: ColoredBox(color: CormexTheme.border),
+            ),
+          ),
           actions: MediaQuery.sizeOf(context).width < 780
               ? [
                   PopupMenuButton<String>(
@@ -85,7 +115,7 @@ class PublicFrame extends StatelessWidget {
                       child: const Text('Entrar'),
                     ),
                   Padding(
-                    padding: const EdgeInsets.only(right: 16),
+                    padding: const EdgeInsets.only(right: 22),
                     child: FilledButton(
                       onPressed: () => context.go('/onboarding'),
                       child: const Text('Sou empresa'),
@@ -105,7 +135,12 @@ class PageWidth extends StatelessWidget {
   Widget build(BuildContext context) => Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: maxWidth),
-          child: Padding(padding: const EdgeInsets.all(22), child: child),
+          child: Padding(
+            padding: EdgeInsets.all(
+              MediaQuery.sizeOf(context).width < 600 ? 18 : 28,
+            ),
+            child: child,
+          ),
         ),
       );
 }
@@ -121,8 +156,19 @@ class Notice extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.info_outline, size: 32, color: CormexTheme.blue),
-              const SizedBox(height: 12),
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: CormexTheme.pale,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Icon(
+                  Icons.info_outline_rounded,
+                  color: CormexTheme.forest,
+                ),
+              ),
+              const SizedBox(height: 14),
               Text(message, textAlign: TextAlign.center),
               if (retry != null) ...[
                 const SizedBox(height: 14),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../app/theme.dart';
 import '../../core/auth/session_store.dart';
 import '../../core/di/registry.dart';
 import '../../core/network/api_client.dart';
@@ -38,6 +39,16 @@ class _ServicesPageState extends State<ServicesPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
+            const Text(
+              'CATÁLOGO',
+              style: TextStyle(
+                color: CormexTheme.forest,
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.5,
+              ),
+            ),
+            const SizedBox(height: 10),
             Wrap(
               spacing: 20,
               runSpacing: 12,
@@ -76,6 +87,18 @@ class _ServicesPageState extends State<ServicesPage> {
                       Card(
                         child: ListTile(
                           contentPadding: const EdgeInsets.all(18),
+                          leading: Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: CormexTheme.pale,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.design_services_outlined,
+                              color: CormexTheme.forest,
+                            ),
+                          ),
                           title: Text(service['name'].toString()),
                           subtitle: Text(
                             '${service['durationMinutes']} min • ${service['pricingMode'] == 'quote' ? 'Sob consulta' : 'R\$ ${((service['priceAmount'] as num) / 100).toStringAsFixed(2)}'}',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/theme.dart';
 import '../../core/auth/session_store.dart';
 import '../../core/di/registry.dart';
 import '../../core/network/api_client.dart';
@@ -41,6 +42,16 @@ class _BookingsPageState extends State<BookingsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
+            const Text(
+              'AGENDA',
+              style: TextStyle(
+                color: CormexTheme.forest,
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.5,
+              ),
+            ),
+            const SizedBox(height: 10),
             Text('Reservas', style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 18),
             RemoteData(
@@ -65,6 +76,18 @@ class _BookingsPageState extends State<BookingsPage> {
                             runSpacing: 10,
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
+                              Container(
+                                width: 44,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  color: CormexTheme.pale,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(
+                                  Icons.event_available_outlined,
+                                  color: CormexTheme.forest,
+                                ),
+                              ),
                               SizedBox(
                                 width: 270,
                                 child: Column(

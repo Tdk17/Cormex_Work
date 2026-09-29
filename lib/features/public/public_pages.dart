@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -11,194 +9,6 @@ import '../../core/config/app_config.dart';
 import '../../core/di/registry.dart';
 import '../../core/network/api_client.dart';
 import '../../core/widgets/common.dart';
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-  @override
-  Widget build(BuildContext context) => PublicFrame(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                color: CormexTheme.navy,
-                child: PageWidth(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 76),
-                    child: Wrap(
-                      spacing: 48,
-                      runSpacing: 32,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: math.min(
-                              540, MediaQuery.sizeOf(context).width - 44),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'AGENDA, EQUIPE E SERVIÇOS EM UM SÓ LUGAR',
-                                style: TextStyle(
-                                  color: CormexTheme.gold,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(height: 18),
-                              const Text(
-                                'Seu negócio trabalha melhor quando tudo se conecta.',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 42,
-                                  fontWeight: FontWeight.w800,
-                                  height: 1.12,
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              const Text(
-                                'Organize atendimentos, ofereça horários reais aos clientes e acompanhe sua operação.',
-                                style: TextStyle(
-                                  color: Color(0xFFD9E1EE),
-                                  fontSize: 17,
-                                ),
-                              ),
-                              const SizedBox(height: 30),
-                              Wrap(
-                                spacing: 12,
-                                runSpacing: 12,
-                                children: [
-                                  FilledButton(
-                                    onPressed: () => context.go('/onboarding'),
-                                    child: const Text('Começar como empresa'),
-                                  ),
-                                  OutlinedButton(
-                                    onPressed: () => context.go('/find'),
-                                    style: OutlinedButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      side:
-                                          const BorderSide(color: Colors.white),
-                                    ),
-                                    child: const Text('Encontrar um serviço'),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: math.min(
-                              360, MediaQuery.sizeOf(context).width - 44),
-                          padding: const EdgeInsets.all(28),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1C2F4C),
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.calendar_month,
-                                color: CormexTheme.gold,
-                                size: 42,
-                              ),
-                              SizedBox(height: 18),
-                              Text(
-                                'Uma agenda para o seu jeito de atender',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(height: 12),
-                              Text(
-                                'Lavação, oficina e beleza usam o mesmo núcleo, com serviços e horários definidos pela empresa.',
-                                style: TextStyle(
-                                  color: Color(0xFFD9E1EE),
-                                  height: 1.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              PageWidth(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (!AppConfig.isConfigured) ...[
-                      const Notice(
-                        message: 'Estamos preparando os agendamentos e o '
-                            'cadastro de empresas. Volte em breve.',
-                      ),
-                      const SizedBox(height: 20),
-                    ],
-                    const SizedBox(height: 34),
-                    Text(
-                      'Pronto para o trabalho de verdade',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    const SizedBox(height: 20),
-                    Wrap(
-                      spacing: 18,
-                      runSpacing: 18,
-                      children: const [
-                        _Feature(
-                          icon: Icons.schedule,
-                          title: 'Horários claros',
-                          body:
-                              'Mostre disponibilidade calculada a partir da agenda cadastrada.',
-                        ),
-                        _Feature(
-                          icon: Icons.storefront,
-                          title: 'Sua vitrine',
-                          body:
-                              'Ative um perfil público com seus serviços e sua cidade.',
-                        ),
-                        _Feature(
-                          icon: Icons.shield_outlined,
-                          title: 'Cada empresa, seus dados',
-                          body:
-                              'Acesso por equipe e validação de permissões no servidor.',
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-}
-
-class _Feature extends StatelessWidget {
-  const _Feature({required this.icon, required this.title, required this.body});
-  final IconData icon;
-  final String title, body;
-  @override
-  Widget build(BuildContext context) => SizedBox(
-        width: math.min(320, MediaQuery.sizeOf(context).width - 44),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(icon, color: CormexTheme.blue, size: 34),
-                const SizedBox(height: 15),
-                Text(title, style: Theme.of(context).textTheme.titleLarge),
-                const SizedBox(height: 8),
-                Text(body),
-              ],
-            ),
-          ),
-        ),
-      );
-}
 
 class FindPage extends StatefulWidget {
   const FindPage({super.key});
@@ -239,6 +49,16 @@ class _FindPageState extends State<FindPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 24),
+                const Text(
+                  'ENCONTRE SERVIÇOS',
+                  style: TextStyle(
+                    color: CormexTheme.forest,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 10),
                 Text(
                   'Encontre quem faz',
                   style: Theme.of(context).textTheme.headlineLarge,
@@ -316,6 +136,18 @@ class _FindPageState extends State<FindPage> {
                           Card(
                             child: ListTile(
                               contentPadding: const EdgeInsets.all(18),
+                              leading: Container(
+                                width: 44,
+                                height: 44,
+                                decoration: BoxDecoration(
+                                  color: CormexTheme.pale,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(
+                                  Icons.storefront_outlined,
+                                  color: CormexTheme.forest,
+                                ),
+                              ),
                               title: Text(item['name'].toString()),
                               subtitle: Text(
                                 '${item['city']} • ${item['state']}\n${item['description']?.toString() ?? ''}',
@@ -375,6 +207,16 @@ class _BusinessPageState extends State<BusinessPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 18),
+                  const Text(
+                    'PERFIL DA EMPRESA',
+                    style: TextStyle(
+                      color: CormexTheme.forest,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 11),
                   Text(
                     data['name'].toString(),
                     style: Theme.of(context).textTheme.headlineLarge,
@@ -396,6 +238,18 @@ class _BusinessPageState extends State<BusinessPage> {
                     Card(
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(18),
+                        leading: Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: CormexTheme.pale,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.design_services_outlined,
+                            color: CormexTheme.forest,
+                          ),
+                        ),
                         title: Text(service['name'].toString()),
                         subtitle: Text(
                           '${service['durationMinutes']} min • ${service['pricingMode'] == 'quote' ? 'Sob consulta' : 'R\$ ${((service['priceAmount'] as num) / 100).toStringAsFixed(2)}'}',

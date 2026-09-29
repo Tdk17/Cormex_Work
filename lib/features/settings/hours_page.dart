@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../app/theme.dart';
 import '../../core/auth/session_store.dart';
 import '../../core/di/registry.dart';
 import '../../core/network/api_client.dart';
@@ -78,6 +79,16 @@ class _HoursPageState extends State<HoursPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
+            const Text(
+              'DISPONIBILIDADE',
+              style: TextStyle(
+                color: CormexTheme.forest,
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.5,
+              ),
+            ),
+            const SizedBox(height: 10),
             Text(
               'Horário de funcionamento',
               style: Theme.of(context).textTheme.headlineMedium,
