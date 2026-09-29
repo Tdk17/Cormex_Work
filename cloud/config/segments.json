@@ -1,0 +1,29 @@
+[
+  {
+    "code": "car_wash",
+    "version": 1,
+    "displayName": "Lavação automotiva",
+    "description": "Agendamento de lavagens e cuidados automotivos.",
+    "sortOrder": 1,
+    "labels": {"service": "Lavagem", "booking": "Agendamento", "resource": "Box"},
+    "capabilities": ["services", "schedule", "resources", "public_profile"]
+  },
+  {
+    "code": "auto_repair",
+    "version": 1,
+    "displayName": "Mecânica e oficina",
+    "description": "Agenda de serviços de oficina e manutenção.",
+    "sortOrder": 2,
+    "labels": {"service": "Serviço", "booking": "Agendamento", "resource": "Baía"},
+    "capabilities": ["services", "schedule", "resources", "public_profile"]
+  },
+  {
+    "code": "beauty_salon",
+    "version": 1,
+    "displayName": "Salão e beleza",
+    "description": "Procedimentos e horários de atendimento.",
+    "sortOrder": 3,
+    "labels": {"service": "Procedimento", "booking": "Agendamento", "resource": "Cadeira"},
+    "capabilities": ["services", "schedule", "resources", "public_profile"]
+  }
+]

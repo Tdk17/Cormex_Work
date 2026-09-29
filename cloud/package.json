@@ -1,0 +1,16 @@
+{
+  "name": "cormex-work-cloud",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Back4App Parse Cloud Code for Cormex Work",
+  "main": "main.js",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "check": "node --check main.js && node --check src/core.js && node --check src/catalog.js && node --check src/bookings.js && node --check src/workspaces.js && node --check src/public.js && node --check scripts/bootstrap.js"
+  },
+  "dependencies": {
+    "ioredis": "^5.4.1",
+    "luxon": "^3.5.0"
+  },
+  "engines": {"node": ">=18"}
+}
