@@ -42,6 +42,13 @@ class ApiClient {
           )
           .timeout(const Duration(seconds: 20));
       if (response.statusCode < 200 || response.statusCode >= 300) {
+        if (response.statusCode == 400 &&
+            response.body.contains('Invalid function:')) {
+          throw const AppFailure(
+            'API_FUNCTION_MISSING',
+            'Esta função ainda não está disponível. Tente novamente mais tarde.',
+          );
+        }
         throw AppFailure(
           response.statusCode == 401 ? 'AUTH_SESSION_EXPIRED' : 'NETWORK_ERROR',
           response.statusCode == 401
