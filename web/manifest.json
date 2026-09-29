@@ -1,12 +1,13 @@
 {
     "name": "Cormex Work",
     "short_name": "Cormex Work",
-    "start_url": ".",
+    "id": "/Cormex_Work/",
+    "start_url": "/Cormex_Work/",
+    "scope": "/Cormex_Work/",
     "display": "standalone",
     "background_color": "#123D43",
     "theme_color": "#123D43",
     "description": "Agenda e gestão de serviços para empresas.",
-    "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
         {

@@ -42,6 +42,8 @@ jobs:
             --dart-define="TERMS_URL=$TERMS_URL" \
             --dart-define="PRIVACY_URL=$PRIVACY_URL" \
             --dart-define=ENVIRONMENT=production
+      - name: Preparar PWA
+        run: python3 scripts/prepare_pwa.py build/web
       - uses: actions/upload-pages-artifact@v4
         with:
           path: build/web

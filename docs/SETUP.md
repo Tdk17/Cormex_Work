@@ -50,9 +50,13 @@ Planos não têm preço fictício. Depois de definir preços e limites reais, es
 
 ## 5. Frontend
 
-Passe ao build somente URL HTTPS e identificadores públicos. Defina também TERMS_URL e PRIVACY_URL com documentos publicados; o cadastro fica desabilitado sem eles. A Client Key, se usada, não é segredo privilegiado. Nunca inclua Master Key, REST API Key privilegiada ou REDIS_URL no bundle.
+Passe ao build somente URL HTTPS e identificadores públicos. Busca e login requerem PARSE_SERVER_URL e PARSE_APPLICATION_ID. Defina também TERMS_VERSION, PRIVACY_VERSION, TERMS_URL e PRIVACY_URL com documentos publicados; o cadastro fica desabilitado sem eles. A Client Key, se usada, não é segredo privilegiado. Nunca inclua Master Key, REST API Key privilegiada ou REDIS_URL no bundle.
 
 O ambiente Flutter não tenta acessar um backend genérico por fallback. Sem configuração válida, só a página inicial informativa fica acessível; funções que usam API mostram um aviso de indisponibilidade. Para Pages, selecione GitHub Actions em Settings → Pages, cadastre as variáveis públicas descritas no README e execute `Publicar GitHub Pages`. Mantenha domínios/CORS restritos ao host escolhido. Verifique cada deep link no host.
+
+O frontend usa somente cabeçalhos Parse autorizados pelo preflight do Back4App. Depois de publicar, abra a busca no GitHub Pages e confirme que `v1-segments-list` e `v1-discovery-search` respondem; variáveis no build não instalam o Cloud Code no Back4App.
+
+O PWA usa manifesto, ícones e um service worker com versão gerada após o build por `python3 scripts/prepare_pwa.py build/web` (a workflow de Pages já executa isso). Ele armazena apenas arquivos estáticos do próprio site para abertura offline. Reservas, login e resultados da API exigem rede e nunca são armazenados pelo service worker.
 
 ## 6. Validação e rollback
 

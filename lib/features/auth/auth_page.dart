@@ -24,6 +24,7 @@ class _AuthPageState extends State<AuthPage> {
   final password = TextEditingController();
   bool busy = false;
   bool accepted = false;
+  bool showPassword = false;
   String? error;
   String? success;
 
@@ -88,12 +89,7 @@ class _AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) {
     final registering = widget.mode == 'register';
     final resetting = widget.mode == 'reset';
-    return PublicFrame(
-      child: Center(
-        child: SingleChildScrollView(
-          child: PageWidth(
-            maxWidth: 560,
-            child: Card(
+    final card = Card(
               child: Padding(
                 padding: EdgeInsets.all(
                   MediaQuery.sizeOf(context).width < 600 ? 25 : 38,
@@ -147,7 +143,10 @@ class _AuthPageState extends State<AuthPage> {
                       if (registering) ...[
                         TextFormField(
                           controller: name,
-                          decoration: const InputDecoration(labelText: 'Nome'),
+                          decoration: const InputDecoration(
+                            labelText: 'Nome',
+                            prefixIcon: Icon(Icons.person_outline_rounded),
+                          ),
                           validator: (v) => (v?.trim().isEmpty ?? true)
                               ? 'Informe seu nome.'
                               : null,
@@ -158,7 +157,10 @@ class _AuthPageState extends State<AuthPage> {
                         controller: email,
                         keyboardType: TextInputType.emailAddress,
                         autofillHints: const [AutofillHints.email],
-                        decoration: const InputDecoration(labelText: 'E-mail'),
+                        decoration: const InputDecoration(
+                          labelText: 'E-mail',
+                          prefixIcon: Icon(Icons.mail_outline_rounded),
+                        ),
                         validator: (v) => (v == null || !v.contains('@'))
                             ? 'Informe um e-mail válido.'
                             : null,
@@ -167,13 +169,30 @@ class _AuthPageState extends State<AuthPage> {
                         const SizedBox(height: 14),
                         TextFormField(
                           controller: password,
-                          obscureText: true,
+                          obscureText: !showPassword,
                           autofillHints: [
                             registering
                                 ? AutofillHints.newPassword
                                 : AutofillHints.password,
                           ],
-                          decoration: const InputDecoration(labelText: 'Senha'),
+                          decoration: InputDecoration(
+                            labelText: 'Senha',
+                            prefixIcon:
+                                const Icon(Icons.lock_outline_rounded),
+                            suffixIcon: IconButton(
+                              tooltip: showPassword
+                                  ? 'Ocultar senha'
+                                  : 'Mostrar senha',
+                              onPressed: () => setState(
+                                () => showPassword = !showPassword,
+                              ),
+                              icon: Icon(
+                                showPassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
+                              ),
+                            ),
+                          ),
                           validator: (v) => registering && (v?.length ?? 0) < 12
                               ? 'Use pelo menos 12 caracteres.'
                               : (v?.isEmpty ?? true)
@@ -246,29 +265,195 @@ class _AuthPageState extends State<AuthPage> {
                       ),
                       const SizedBox(height: 12),
                       if (!registering && !resetting)
-                        TextButton(
-                          onPressed: () => context.go('/reset'),
-                          child: const Text('Esqueci minha senha'),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () => context.go('/reset'),
+                            child: const Text('Esqueci minha senha'),
+                          ),
                         ),
-                      TextButton(
-                        onPressed: () => context.go((registering
-                                ? '/login'
-                                : '/register') +
-                            (widget.from == null
-                                ? ''
-                                : '?from=${Uri.encodeComponent(widget.from!)}')),
-                        child: Text(
-                          registering ? 'Já tenho conta' : 'Criar uma conta',
+                      const SizedBox(height: 8),
+                      const Divider(),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              registering
+                                  ? 'Já faz parte do Cormex Work?'
+                                  : 'Ainda não tem conta?',
+                              style:
+                                  const TextStyle(color: CormexTheme.muted),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () => context.go((registering
+                                    ? '/login'
+                                    : '/register') +
+                                (widget.from == null
+                                    ? ''
+                                    : '?from=${Uri.encodeComponent(widget.from!)}')),
+                            child: Text(
+                              registering ? 'Entrar' : 'Criar conta',
+                            ),
+                          ),
+                        ],
                         ),
-                      ),
                     ],
                   ),
                 ),
               ),
+            );
+    return PublicFrame(
+      child: SingleChildScrollView(
+        child: PageWidth(
+          maxWidth: 1180,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 42),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final compact = constraints.maxWidth < 890;
+                if (compact) {
+                  return Column(
+                    children: [
+                      const _AuthIntro(compact: true),
+                      const SizedBox(height: 20),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 560),
+                        child: card,
+                      ),
+                    ],
+                  );
+                }
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Expanded(child: _AuthIntro()),
+                    const SizedBox(width: 30),
+                    SizedBox(width: 500, child: card),
+                  ],
+                );
+              },
             ),
           ),
         ),
       ),
     );
   }
+}
+
+class _AuthIntro extends StatelessWidget {
+  const _AuthIntro({this.compact = false});
+
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(compact ? 28 : 42),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [CormexTheme.deep, CormexTheme.petroleum],
+          ),
+          borderRadius: BorderRadius.circular(22),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 46,
+              height: 46,
+              decoration: BoxDecoration(
+                color: const Color(0xFF2A6259),
+                borderRadius: BorderRadius.circular(13),
+              ),
+              child: const Icon(
+                Icons.grid_view_rounded,
+                color: CormexTheme.sage,
+              ),
+            ),
+            SizedBox(height: compact ? 34 : 95),
+            const Text(
+              'BEM-VINDO AO CORMEX WORK',
+              style: TextStyle(
+                color: CormexTheme.sage,
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.6,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text.rich(
+              const TextSpan(
+                children: [
+                  TextSpan(text: 'Sua operação,\n'),
+                  TextSpan(
+                    text: 'mais simples.',
+                    style: TextStyle(color: CormexTheme.sage),
+                  ),
+                ],
+              ),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: compact ? 36 : 43,
+                fontWeight: FontWeight.w800,
+                height: 1.1,
+                letterSpacing: -1.3,
+              ),
+            ),
+            const SizedBox(height: 19),
+            const Text(
+              'Entre para organizar serviços, horários e reservas '
+              'em um só espaço.',
+              style: TextStyle(
+                color: Color(0xFFC6D8D3),
+                fontSize: 16,
+                height: 1.55,
+              ),
+            ),
+            if (!compact) ...[
+              const SizedBox(height: 48),
+              const Divider(color: Color(0xFF456762)),
+              const SizedBox(height: 20),
+              const _AuthBenefit(
+                icon: Icons.calendar_month_outlined,
+                text: 'Agenda organizada para sua rotina',
+              ),
+              const SizedBox(height: 17),
+              const _AuthBenefit(
+                icon: Icons.storefront_outlined,
+                text: 'Serviços apresentados com clareza',
+              ),
+              const SizedBox(height: 17),
+              const _AuthBenefit(
+                icon: Icons.groups_outlined,
+                text: 'Equipe no mesmo fluxo de trabalho',
+              ),
+            ],
+          ],
+        ),
+      );
+}
+
+class _AuthBenefit extends StatelessWidget {
+  const _AuthBenefit({required this.icon, required this.text});
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Row(
+        children: [
+          Icon(icon, size: 21, color: CormexTheme.sage),
+          const SizedBox(width: 13),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(color: Color(0xFFE1ECE8)),
+            ),
+          ),
+        ],
+      );
 }

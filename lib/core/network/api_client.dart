@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:uuid/uuid.dart';
 
 import '../config/app_config.dart';
 import '../errors/app_failure.dart';
@@ -11,7 +10,6 @@ class ApiClient {
   ApiClient(this._http);
   final http.Client _http;
   String? _sessionToken;
-  static const _uuid = Uuid();
 
   void setSession(String? value) => _sessionToken = value;
 
@@ -22,7 +20,7 @@ class ApiClient {
     if (!AppConfig.isConfigured) {
       throw const AppFailure(
         'CONFIGURATION_ERROR',
-        'Configure o endereço do Back4App e as versões dos Termos.',
+        'Configure o endereço e o identificador do Back4App.',
       );
     }
     final url = Uri.parse(
@@ -39,7 +37,6 @@ class ApiClient {
                 'X-Parse-Client-Key': AppConfig.clientKey,
               if (_sessionToken != null)
                 'X-Parse-Session-Token': _sessionToken!,
-              'X-Correlation-Id': _uuid.v4(),
             },
             body: jsonEncode(params),
           )

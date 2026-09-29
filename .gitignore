@@ -11,3 +11,5 @@ coverage/
 .env
 cloud/node_modules/
 cloud/.env
+__pycache__/
+*.pyc

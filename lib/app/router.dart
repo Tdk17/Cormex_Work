@@ -10,6 +10,7 @@ import '../features/dashboard/dashboard_page.dart';
 import '../features/onboarding/onboarding_page.dart';
 import '../features/public/landing_page.dart';
 import '../features/public/public_pages.dart';
+import '../features/public/search_page.dart';
 import '../features/services/services_page.dart';
 import '../features/settings/hours_page.dart';
 import '../features/settings/settings_page.dart';
