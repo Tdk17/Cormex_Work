@@ -5,7 +5,6 @@ import 'package:uuid/uuid.dart';
 
 import '../../app/theme.dart';
 import '../../core/auth/session_store.dart';
-import '../../core/config/app_config.dart';
 import '../../core/di/registry.dart';
 import '../../core/network/api_client.dart';
 import '../../core/widgets/common.dart';
