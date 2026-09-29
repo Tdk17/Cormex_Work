@@ -1,0 +1,61 @@
+name: Publicar GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Compilar Flutter Web
+        env:
+          PARSE_SERVER_URL: ${{ vars.PARSE_SERVER_URL }}
+          PARSE_APPLICATION_ID: ${{ vars.PARSE_APPLICATION_ID }}
+          PARSE_CLIENT_KEY: ${{ vars.PARSE_CLIENT_KEY }}
+          TERMS_VERSION: ${{ vars.TERMS_VERSION }}
+          PRIVACY_VERSION: ${{ vars.PRIVACY_VERSION }}
+          TERMS_URL: ${{ vars.TERMS_URL }}
+          PRIVACY_URL: ${{ vars.PRIVACY_URL }}
+        run: |
+          flutter build web --release --base-href /Cormex_Work/ \
+            --dart-define="PARSE_SERVER_URL=$PARSE_SERVER_URL" \
+            --dart-define="PARSE_APPLICATION_ID=$PARSE_APPLICATION_ID" \
+            --dart-define="PARSE_CLIENT_KEY=$PARSE_CLIENT_KEY" \
+            --dart-define="TERMS_VERSION=$TERMS_VERSION" \
+            --dart-define="PRIVACY_VERSION=$PRIVACY_VERSION" \
+            --dart-define="TERMS_URL=$TERMS_URL" \
+            --dart-define="PRIVACY_URL=$PRIVACY_URL" \
+            --dart-define=ENVIRONMENT=production
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

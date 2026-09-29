@@ -6,7 +6,7 @@ Plataforma SaaS multiempresa para agendamento e operação de serviços. Código
 
 Primeira fatia funcional: área pública, cadastro e login, criação de empresa, seleção de plano com avaliação configurada no servidor, perfil público, serviços, horários, recursos no backend, disponibilidade, reserva idempotente, transições e painel. O aplicativo não apresenta registros fictícios. Falhas de API aparecem como erro.
 
-O sistema **não está em produção**. Equipe e convites, remarcação, relatórios completos, notificações, console da plataforma, exportação LGPD e cobrança com provedor ainda não estão implementados. Veja [escopo e próximos passos](docs/STATUS.md).
+O frontend pode ser publicado no GitHub Pages. Sem o novo Back4App configurado, a página inicial abre, mas cadastro, busca e agendamentos aguardam ativação. Equipe e convites, remarcação, relatórios completos, notificações, console da plataforma, exportação LGPD e cobrança com provedor ainda não estão implementados. Veja [escopo e próximos passos](docs/STATUS.md).
 
 ## Estrutura
 
@@ -16,6 +16,13 @@ O sistema **não está em produção**. Equipe e convites, remarcação, relató
 - docs/SETUP.md: configuração separada de Back4App, Redis, planos, CLPs e build.
 - docs/API.md: funções implementadas e contratos.
 - .github/workflows/ci.yml: análise Flutter e testes do Cloud Code.
+- .github/workflows/pages.yml: build Flutter e publicação no GitHub Pages após push em main.
+
+## GitHub Pages
+
+Em **Settings → Pages → Build and deployment → Source**, selecione **GitHub Actions**. O fluxo `Publicar GitHub Pages` compila com base `/Cormex_Work/` e publica em https://tdk17.github.io/Cormex_Work/. Também pode ser iniciado manualmente em Actions.
+
+Quando o novo backend estiver pronto, configure no repositório em **Settings → Secrets and variables → Actions → Variables**: `PARSE_SERVER_URL`, `PARSE_APPLICATION_ID`, `TERMS_VERSION`, `PRIVACY_VERSION`, `TERMS_URL` e `PRIVACY_URL`; `PARSE_CLIENT_KEY` é opcional. Rode o fluxo novamente. Essas variáveis entram no JavaScript público: nunca use Master Key, credenciais Redis ou chaves privadas. A hospedagem de Pages cobre apenas o frontend; a API Parse precisa operar separadamente.
 
 ## Desenvolvimento
 

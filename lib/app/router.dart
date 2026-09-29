@@ -34,7 +34,7 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const ConfigurationGate(child: HomePage()),
+      builder: (context, state) => const HomePage(),
     ),
     GoRoute(
       path: '/find',
@@ -57,17 +57,20 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/login',
-      builder: (_, s) =>
-          AuthPage(mode: 'login', from: s.uri.queryParameters['from']),
+      builder: (_, s) => ConfigurationGate(
+        child: AuthPage(mode: 'login', from: s.uri.queryParameters['from']),
+      ),
     ),
     GoRoute(
       path: '/register',
-      builder: (_, s) =>
-          AuthPage(mode: 'register', from: s.uri.queryParameters['from']),
+      builder: (_, s) => ConfigurationGate(
+        child: AuthPage(mode: 'register', from: s.uri.queryParameters['from']),
+      ),
     ),
     GoRoute(
       path: '/reset',
-      builder: (context, state) => const AuthPage(mode: 'reset'),
+      builder: (context, state) =>
+          const ConfigurationGate(child: AuthPage(mode: 'reset')),
     ),
     GoRoute(
         path: '/onboarding',

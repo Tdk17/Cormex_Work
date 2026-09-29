@@ -52,7 +52,7 @@ Planos não têm preço fictício. Depois de definir preços e limites reais, es
 
 Passe ao build somente URL HTTPS e identificadores públicos. Defina também TERMS_URL e PRIVACY_URL com documentos publicados; o cadastro fica desabilitado sem eles. A Client Key, se usada, não é segredo privilegiado. Nunca inclua Master Key, REST API Key privilegiada ou REDIS_URL no bundle.
 
-O ambiente Flutter não tenta acessar um backend genérico por fallback. Sem configuração válida mostra erro de configuração. Mantenha domínios/CORS restritos ao host escolhido. Verifique cada deep link no host.
+O ambiente Flutter não tenta acessar um backend genérico por fallback. Sem configuração válida, só a página inicial informativa fica acessível; funções que usam API mostram um aviso de indisponibilidade. Para Pages, selecione GitHub Actions em Settings → Pages, cadastre as variáveis públicas descritas no README e execute `Publicar GitHub Pages`. Mantenha domínios/CORS restritos ao host escolhido. Verifique cada deep link no host.
 
 ## 6. Validação e rollback
 

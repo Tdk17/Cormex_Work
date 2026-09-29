@@ -176,8 +176,8 @@ class ConfigurationGate extends StatelessWidget {
       : const Scaffold(
           body: PageWidth(
             child: Notice(
-              message:
-                  'Configuração do Back4App ausente. Consulte docs/SETUP.md.',
+              message: 'Esta função estará disponível quando a operação do '
+                  'Cormex Work estiver pronta.',
             ),
           ),
         );

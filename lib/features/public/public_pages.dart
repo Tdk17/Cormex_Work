@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../app/theme.dart';
 import '../../core/auth/session_store.dart';
+import '../../core/config/app_config.dart';
 import '../../core/di/registry.dart';
 import '../../core/network/api_client.dart';
 import '../../core/widgets/common.dart';
@@ -128,6 +129,13 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (!AppConfig.isConfigured) ...[
+                      const Notice(
+                        message: 'Estamos preparando os agendamentos e o '
+                            'cadastro de empresas. Volte em breve.',
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                     const SizedBox(height: 34),
                     Text(
                       'Pronto para o trabalho de verdade',
