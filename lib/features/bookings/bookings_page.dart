@@ -54,8 +54,10 @@ class _BookingsPageState extends State<BookingsPage> {
       });
       if (mounted) context.go('/orders/${data['id']}');
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())));
+      }
     }
   }
   Future<void> transition(Map booking, String status) async {

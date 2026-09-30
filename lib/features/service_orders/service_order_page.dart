@@ -69,7 +69,7 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> {
     }
   }
 
-  Future<void> estimate() async {
+  Future<void> sendEstimate() async {
     final description = TextEditingController();
     final amount = TextEditingController();
     final result = await showDialog<Map<String, String>>(
@@ -158,7 +158,7 @@ class _ServiceOrderPageState extends State<ServiceOrderPage> {
                     OutlinedButton(onPressed: busy ? null : () => inspect(inspection),
                       child: const Text('Registrar vistoria')),
                   if (canManage && ['inspection', 'awaiting_approval'].contains(status))
-                    FilledButton(onPressed: busy ? null : estimate,
+                    FilledButton(onPressed: busy ? null : sendEstimate,
                       child: const Text('Enviar orçamento')),
                   if (canApprove && status == 'awaiting_approval' &&
                       estimate?['decision'] == 'pending')

@@ -30,11 +30,15 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
     try {
       await di<ApiClient>().call('notifications-mark-read',
           {'notificationId': item['id']});
-      if (mounted) setState(() => notifications =
-          di<ApiClient>().call('notifications-list', {'limit': 10}));
+      if (mounted) {
+        setState(() => notifications =
+            di<ApiClient>().call('notifications-list', {'limit': 10}));
+      }
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString())));
+      }
     }
   }
 
@@ -102,11 +106,13 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
                                 'city': name, 'state': state, 'municipalityId': id,
                               });
                               await di<SessionStore>().refresh();
-                              if (mounted) setState(() {
-                                city.text = name;
-                                selectedState = state;
-                                locationError = null;
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  city.text = name;
+                                  selectedState = state;
+                                  locationError = null;
+                                });
+                              }
                             } catch (error) {
                               if (mounted) setState(() => locationError = error.toString());
                             }
