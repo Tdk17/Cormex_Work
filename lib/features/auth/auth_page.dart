@@ -299,17 +299,17 @@ class _AuthPageState extends State<AuthPage> {
                       const SizedBox(height: 8),
                       const Divider(),
                       const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 12,
+                        runSpacing: 8,
                         children: [
-                          Flexible(
-                            child: Text(
-                              registering
-                                  ? 'Já faz parte do Cormex Work?'
-                                  : 'Ainda não tem conta?',
-                              style:
-                                  const TextStyle(color: CormexTheme.muted),
-                            ),
+                          Text(
+                            registering
+                                ? 'Já faz parte do Cormex Work?'
+                                : 'Ainda não tem conta?',
+                            style: const TextStyle(color: CormexTheme.muted),
                           ),
                           OutlinedButton(
                             onPressed: () => context.go((registering
@@ -329,7 +329,7 @@ class _AuthPageState extends State<AuthPage> {
                             ),
                           ),
                         ],
-                        ),
+                      ),
                     ],
                   ),
                 ),
