@@ -3,13 +3,15 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/theme.dart';
 import '../../core/di/registry.dart';
+import '../../core/location/location_picker.dart';
 import '../../core/network/api_client.dart';
 import '../../core/widgets/common.dart';
 
 class FindPage extends StatefulWidget {
-  const FindPage({super.key, this.segmentCode, this.initialCity});
+  const FindPage({super.key, this.segmentCode, this.initialCity, this.initialState});
   final String? segmentCode;
   final String? initialCity;
+  final String? initialState;
 
   @override
   State<FindPage> createState() => _FindPageState();
@@ -21,6 +23,7 @@ class _FindPageState extends State<FindPage> {
       di<ApiClient>().call('segments-list');
   late Future<Map<String, dynamic>> results;
   String? segment;
+  String? selectedState;
   final List<dynamic> accumulated = [];
 
   @override
@@ -28,6 +31,7 @@ class _FindPageState extends State<FindPage> {
     super.initState();
     segment = widget.segmentCode;
     city.text = widget.initialCity ?? '';
+    selectedState = widget.initialState;
     results = search();
   }
 
@@ -35,6 +39,8 @@ class _FindPageState extends State<FindPage> {
       di<ApiClient>().call('discovery-search', {
         if (segment != null) 'segmentCode': segment,
         if (city.text.trim().isNotEmpty) 'city': city.text.trim(),
+        if (selectedState != null && selectedState!.isNotEmpty)
+          'state': selectedState!,
         if (cursor != null) 'cursor': cursor,
       });
 
@@ -187,17 +193,14 @@ class _FindPageState extends State<FindPage> {
                                     ),
                                     SizedBox(
                                       width: fieldWidth,
-                                      child: TextField(
-                                        controller: city,
-                                        textInputAction: TextInputAction.search,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Cidade',
-                                          hintText: 'Digite sua cidade',
-                                          prefixIcon: Icon(
-                                            Icons.location_on_outlined,
-                                          ),
-                                        ),
-                                        onSubmitted: (_) => reload(),
+                                      child: LocationPicker(
+                                        initialState: selectedState,
+                                        initialCity: city.text,
+                                        onChanged: (state, name, id) {
+                                          selectedState = state;
+                                          city.text = name;
+                                          reload();
+                                        },
                                       ),
                                     ),
                                   ],
@@ -279,6 +282,7 @@ class _FindPageState extends State<FindPage> {
                             action: 'Limpar filtros',
                             onPressed: () {
                               city.clear();
+                              selectedState = null;
                               segment = null;
                               reload();
                             },

@@ -13,6 +13,8 @@ import '../features/public/landing_page.dart';
 import '../features/public/public_pages.dart';
 import '../features/public/search_page.dart';
 import '../features/services/services_page.dart';
+import '../features/service_orders/service_order_page.dart';
+import '../features/finance/finance_page.dart';
 import '../features/settings/hours_page.dart';
 import '../features/settings/settings_page.dart';
 import 'shell.dart';
@@ -25,7 +27,7 @@ final appRouter = GoRouter(
     final private = path == '/client' || path == '/find' ||
         path.startsWith('/business/') || path.startsWith('/book/') ||
         path == '/onboarding' ||
-        path == '/my-bookings' ||
+        path == '/my-bookings' || path.startsWith('/orders/') ||
         path.startsWith('/app/');
     if (private && !di<SessionStore>().isAuthenticated) {
       return '/login?from=${Uri.encodeComponent(state.uri.toString())}';
@@ -47,6 +49,7 @@ final appRouter = GoRouter(
         child: FindPage(
           segmentCode: state.uri.queryParameters['segment'],
           initialCity: state.uri.queryParameters['city'],
+          initialState: state.uri.queryParameters['state'],
         ),
       ),
     ),
@@ -90,6 +93,12 @@ final appRouter = GoRouter(
         path: '/onboarding',
         builder: (context, state) => const OnboardingPage()),
     GoRoute(
+      path: '/orders/:id',
+      builder: (_, s) => ConfigurationGate(
+        child: ServiceOrderPage(id: s.pathParameters['id']!),
+      ),
+    ),
+    GoRoute(
         path: '/my-bookings',
         builder: (context, state) => const MyBookingsPage()),
     ShellRoute(
@@ -109,6 +118,9 @@ final appRouter = GoRouter(
             path: '/app/hours', builder: (context, state) => const HoursPage()),
         GoRoute(
             path: '/app/plan', builder: (context, state) => const PlanPage()),
+        GoRoute(
+            path: '/app/finance',
+            builder: (context, state) => const FinancePage()),
         GoRoute(
             path: '/app/settings',
             builder: (context, state) => const SettingsPage()),

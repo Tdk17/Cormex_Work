@@ -5,7 +5,7 @@ Este documento define o fluxo do produto. O Work é a plataforma de agendamento 
 ## Fluxo do cliente
 
 1. A página institucional oferece entrada/cadastro. Busca, perfil do profissional, horários e agendamento exigem conta autenticada.
-2. O primeiro destino após login é `/client`, com cidade, categorias retornadas por `v1-segments-list` e próximos atendimentos de `v1-bookings-mine`. A cidade é dado de perfil e pode ser corrigida. Localização automática deve pedir permissão explícita, converter coordenadas em cidade por serviço definido e permitir edição; não se deve inferir cidade a partir de IP nem mostrar cidade inventada.
+2. O primeiro destino após login é `/client`, com cidade, categorias retornadas por `v1-segments-list` e próximos atendimentos de `v1-bookings-mine`. Estados e municípios vêm da API oficial de localidades do IBGE, carregados por UF e mantidos apenas em cache da sessão; a escolha do cliente é persistida em `v1-customer-profile-update`. Localização automática por coordenadas ainda depende de permissão explícita e serviço de geocodificação; não se deve inferir cidade do IP nem inventá-la.
 3. A categoria abre `/find?segment=...&city=...`; `v1-discovery-search` devolve somente empresas ativas naquela categoria/cidade. O cliente abre `/business/:slug`, escolhe serviço e disponibilidade em `/book/...`, confirma a reserva pela API e acompanha em `/my-bookings`.
 4. Cada agendamento deve mostrar empresa, endereço/local, serviço, horário com fuso, situação e histórico. A data deve ser formatada no fuso do atendimento. Avisos de pronto, alterações ou cancelamento geram evento e notificação persistida.
 5. Um cliente não precisa criar empresa. Uma mesma conta pode ser cliente e membro de empresa; a troca de área não modifica a identidade.
@@ -27,17 +27,20 @@ Este documento define o fluxo do produto. O Work é a plataforma de agendamento 
 
 O núcleo de autenticação, empresa, agenda, clientes, notificações, permissões e financeiro é comum. Cada segmento acrescenta recursos e campos próprios por versão de configuração; não se espalham condicionais por todas as telas.
 
-## Contratos que ainda precisam ser implementados
+## Contratos implementados na branch
 
-- `v1-customer-profile-get/update`: sessão do titular; cidade/UF e preferências, com validação e consentimento para localização. A resposta de `v1-auth-me` pode incluir somente o resumo necessário.
-- `v1-bookings-mine` e `v1-bookings-list`: incluir nome e endereço da empresa, fuso, situação e eventos relevantes sem permitir ler reservas alheias.
-- `v1-service-orders-create/get/list/update`: membro autorizado cria OS para booking/veículo do mesmo workspace; cliente titular vê a projeção pública da própria OS. IDs de workspace, booking e cliente são conferidos no servidor.
-- `v1-service-orders-inspection-upsert`: itens verificados e achados; manter autor, horário e trilha imutável de alterações relevantes.
-- `v1-service-orders-estimate-submit/decision`: itens, valores e validade; cliente titular aprova/rejeita versão específica, sem confundir agendamento com autorização de reparo. Mudanças de valor exigem nova versão e aprovação.
-- `v1-service-orders-status-update`: estados `opened`, `inspection`, `awaiting_approval`, `awaiting_parts`, `in_service`, `ready_for_pickup`, `delivered`, `canceled`; transições limitadas por papel, evento e notificação ao cliente.
-- `v1-business-services-*`, `v1-business-hours-*`, `v1-resources-*`, `v1-packages-*`: configuração pela empresa, isolamento por workspace e disponibilidade recalculada. Não expor pacotes antes do contrato existir.
-- `v1-finance-entries-*`, `v1-finance-summary`: valores em centavos, moeda, origem, competência, vencimento, pagamento confirmado e estornos; acesso somente de owner/admin/financeiro; relatórios do cliente não expõem dados da empresa.
-- `v1-notifications-list/read`: eventos persistentes de reserva, OS e conclusão; push é canal adicional, nunca a única fonte de verdade.
+- `v1-customer-profile-update` e `v1-auth-me` transportam cidade, UF e código de município. `v1-discovery-search` filtra por cidade e UF.
+- `v1-bookings-mine/list` traz nome e endereço da empresa, cidade, UF e horário local. Empresas novas informam endereço ao cadastrar; existentes precisam preenchê-lo antes de ativar o perfil público.
+- `v1-availability-options` lista recursos ativos para serviços que exigem box, cadeira ou baía; a reserva envia o recurso escolhido.
+- `v1-service-orders-*` abre OS vinculada ao agendamento de oficina, registra vistoria, envia orçamento em centavos, recebe aprovação do cliente da versão exata e atualiza o status. Eventos de alteração geram notificação persistente.
+- `v1-finance-entries-create/list/settle` e `v1-finance-summary` registram lançamentos manuais com acesso do proprietário. Receita prevista e recebida ficam separadas.
+
+## Contratos e decisões ainda pendentes
+
+- Geolocalização automática, endereço validado/CEP, histórico detalhado e imutável por item de vistoria, fotos, aprovação com validade, estornos e relatórios financeiros por competência.
+- Pacotes/planos comerciais da empresa e configuração completa de equipe/recursos na interface; o backend já possui serviços, horário e recursos.
+- Push e e-mail transacionais; a implementação presente garante apenas notificações dentro do app.
+- Confirmar publicação do `cloud/main.js` no Back4App, versões e URLs jurídicas no Pages e no backend, Redis e dados iniciais de segmentos/planos antes do teste real de cadastro.
 
 ## Portões de aceitação
 
@@ -49,4 +52,4 @@ O núcleo de autenticação, empresa, agenda, clientes, notificações, permiss�
 
 ## Situação da implementação
 
-A branch de realinhamento leva a busca e o agendamento para dentro da sessão e introduz `/client` com categorias e reservas usando as funções atuais. Cidade ainda é filtro manual; a API não fornece perfil de cidade nem geocodificação. A resposta atual de `bookings-mine` não traz nome/endereço da empresa. Ordem de serviço, pacotes comerciais, eventos/notificações e controle financeiro ainda não existem. Não declarar esses fluxos funcionais até o Cloud Code e a interface serem implementados e testados juntos.
+A branch contém o código de localização, agendamentos, OS e financeiro. O teste real de ponta a ponta aguarda Cloud Code atualizado e cadastro funcional no app Back4App. O build isolado não comprova deploy nem operação em produção.

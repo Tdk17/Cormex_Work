@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import '../../app/theme.dart';
 import '../../core/auth/session_store.dart';
 import '../../core/di/registry.dart';
+import '../../core/location/location_picker.dart';
 import '../../core/network/api_client.dart';
 import '../../core/widgets/common.dart';
 
@@ -20,6 +21,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final slug = TextEditingController();
   final city = TextEditingController();
   final state = TextEditingController();
+  final address = TextEditingController();
+  int? municipalityId;
   final timezone = TextEditingController(text: 'America/Sao_Paulo');
   final idempotencyKey = const Uuid().v4();
   String? segment;
@@ -35,12 +38,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
     slug.dispose();
     city.dispose();
     state.dispose();
+    address.dispose();
     timezone.dispose();
     super.dispose();
   }
 
   Future<void> create() async {
-    if (!form.currentState!.validate() || segment == null) {
+    if (!form.currentState!.validate() || segment == null || municipalityId == null) {
       setState(() => error = 'Escolha um segmento e confira os campos.');
       return;
     }
@@ -54,6 +58,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         'slug': slug.text.trim().toLowerCase(),
         'city': city.text.trim(),
         'state': state.text.trim(),
+        'address': address.text.trim(),
         'timezone': timezone.text.trim(),
         'segmentCode': segment,
         'idempotencyKey': idempotencyKey,
@@ -146,31 +151,21 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          Wrap(
-                            spacing: 12,
-                            runSpacing: 12,
-                            children: [
-                              SizedBox(
-                                width: 310,
-                                child: TextFormField(
-                                  controller: city,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Cidade',
-                                  ),
-                                  validator: requiredField,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 190,
-                                child: TextFormField(
-                                  controller: state,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Estado',
-                                  ),
-                                  validator: requiredField,
-                                ),
-                              ),
-                            ],
+                          LocationPicker(
+                            onChanged: (uf, name, id) {
+                              state.text = uf;
+                              city.text = name;
+                              municipalityId = id;
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          TextFormField(
+                            controller: address,
+                            decoration: const InputDecoration(
+                              labelText: 'Endereço do atendimento',
+                              hintText: 'Rua, número e bairro',
+                            ),
+                            validator: requiredField,
                           ),
                           const SizedBox(height: 12),
                           TextFormField(

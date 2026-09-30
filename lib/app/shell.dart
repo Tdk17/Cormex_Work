@@ -116,6 +116,7 @@ class WorkShell extends StatelessWidget {
         '/app/bookings' => 'Reservas',
         '/app/hours' => 'Horários',
         '/app/plan' => 'Plano',
+        '/app/finance' => 'Financeiro',
         '/app/settings' => 'Empresa',
         _ => 'Cormex Work',
       };
@@ -178,6 +179,11 @@ class WorkShell extends StatelessWidget {
             ),
           ),
           _link(context, Icons.credit_card_outlined, 'Plano', '/app/plan'),
+          if (di<SessionStore>().memberships.value.any((m) =>
+              m is Map && m['workspaceId'] == di<SessionStore>().workspaceId.value &&
+              m['role'] == 'owner'))
+            _link(context, Icons.account_balance_wallet_outlined,
+                'Financeiro', '/app/finance'),
           _link(context, Icons.settings_outlined, 'Empresa', '/app/settings'),
                 ],
               ),
