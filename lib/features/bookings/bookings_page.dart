@@ -199,7 +199,7 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
                       return Column(children: [
                         const Notice(message: 'Você ainda não tem reservas.'),
                         TextButton(
-                            onPressed: () => context.go('/find'),
+                            onPressed: () => context.go('/client'),
                             child: const Text('Encontrar serviço')),
                       ]);
                     }

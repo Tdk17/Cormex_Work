@@ -172,9 +172,17 @@ class _BookPageState extends State<BookPage> {
           child: PageWidth(
             maxWidth: 760,
             child: confirmed != null
-                ? Notice(
-                    message:
-                        'Reserva confirmada. Protocolo: ${confirmed!['id']}',
+                ? Column(
+                    children: [
+                      Notice(
+                        message:
+                            'Reserva registrada. Protocolo: ${confirmed!['id']}',
+                      ),
+                      TextButton(
+                        onPressed: () => context.go('/my-bookings'),
+                        child: const Text('Ver meus agendamentos'),
+                      ),
+                    ],
                   )
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

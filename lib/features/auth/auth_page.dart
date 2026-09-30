@@ -69,13 +69,10 @@ class _AuthPageState extends State<AuthPage> {
         await di<SessionStore>().login(email.text.trim(), password.text);
         if (!mounted) return;
         final from = widget.from;
-        final hasWorkspace = di<SessionStore>().workspaceId.value != null;
         context.go(
           from != null && from.startsWith('/') && !from.startsWith('//')
               ? from
-              : hasWorkspace
-                  ? '/app/dashboard'
-                  : '/my-bookings',
+              : '/client',
         );
       }
     } catch (e) {

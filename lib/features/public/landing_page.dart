@@ -310,12 +310,12 @@ class _HeroCopy extends StatelessWidget {
                 label: const Text('Começar como empresa'),
               ),
               OutlinedButton(
-                onPressed: () => context.go('/find'),
+                onPressed: () => context.go('/client'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.white,
                   side: const BorderSide(color: Color(0xFF749B92)),
                 ),
-                child: const Text('Encontrar um serviço'),
+                child: const Text('Entrar como cliente'),
               ),
             ],
           ),

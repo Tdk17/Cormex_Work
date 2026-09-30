@@ -7,7 +7,9 @@ import '../../core/network/api_client.dart';
 import '../../core/widgets/common.dart';
 
 class FindPage extends StatefulWidget {
-  const FindPage({super.key});
+  const FindPage({super.key, this.segmentCode, this.initialCity});
+  final String? segmentCode;
+  final String? initialCity;
 
   @override
   State<FindPage> createState() => _FindPageState();
@@ -17,9 +19,17 @@ class _FindPageState extends State<FindPage> {
   final city = TextEditingController();
   late Future<Map<String, dynamic>> segments =
       di<ApiClient>().call('segments-list');
-  late Future<Map<String, dynamic>> results = search();
+  late Future<Map<String, dynamic>> results;
   String? segment;
   final List<dynamic> accumulated = [];
+
+  @override
+  void initState() {
+    super.initState();
+    segment = widget.segmentCode;
+    city.text = widget.initialCity ?? '';
+    results = search();
+  }
 
   Future<Map<String, dynamic>> search([String? cursor]) =>
       di<ApiClient>().call('discovery-search', {
@@ -60,7 +70,7 @@ class _FindPageState extends State<FindPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'DESCUBRA EMPRESAS',
+                          'SUA REDE DE PROFISSIONAIS',
                           style: TextStyle(
                             color: CormexTheme.sage,
                             fontSize: 11,
@@ -78,7 +88,7 @@ class _FindPageState extends State<FindPage> {
                         ),
                         const SizedBox(height: 10),
                         const Text(
-                          'Explore empresas por segmento e cidade. '
+                          'Explore profissionais por segmento e cidade. '
                           'Escolha com tranquilidade e reserve no horário disponível.',
                           style: TextStyle(
                             color: Color(0xFFC6D7D3),
@@ -232,7 +242,7 @@ class _FindPageState extends State<FindPage> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Resultados públicos de empresas cadastradas.',
+                      'Escolha um profissional para ver os serviços e horários.',
                       style: TextStyle(color: CormexTheme.muted),
                     ),
                     const SizedBox(height: 18),

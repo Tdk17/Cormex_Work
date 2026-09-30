@@ -4,9 +4,9 @@ Plataforma SaaS multiempresa para agendamento e operação de serviços. Código
 
 ## Estado desta entrega
 
-Primeira fatia funcional: área pública, cadastro e login, criação de empresa, seleção de plano com avaliação configurada no servidor, perfil público, serviços, horários, recursos no backend, disponibilidade, reserva idempotente, transições e painel. O aplicativo não apresenta registros fictícios. Falhas de API aparecem como erro.
+O fluxo do cliente começa em conta autenticada: `/client` reúne categorias e reservas; busca, perfil do profissional e agendamento exigem login. A área da empresa mantém serviços, horários, reservas e painel. O aplicativo não apresenta registros fictícios. Falhas de API aparecem como erro.
 
-O frontend pode ser publicado no GitHub Pages. Sem o novo Back4App configurado, a página inicial abre, mas cadastro, busca e agendamentos aguardam ativação. Equipe e convites, remarcação, relatórios completos, notificações, console da plataforma, exportação LGPD e cobrança com provedor ainda não estão implementados. Veja [escopo e próximos passos](docs/STATUS.md).
+O frontend pode ser publicado no GitHub Pages. A existência das chaves do Parse no build não confirma que as funções Cloud Code estão ativas nem que cadastro e reservas passam de ponta a ponta. A cidade no painel é um filtro manual até existir perfil e geocodificação; a API de reservas ainda não devolve o endereço da empresa. Ordem de serviço da oficina, financeiro, pacotes, notificações, remarcação e relatórios completos ainda não estão implementados. Veja a [arquitetura do produto](docs/PRODUCT_ARCHITECTURE.md) e o [estado técnico](docs/STATUS.md).
 
 ## Estrutura
 

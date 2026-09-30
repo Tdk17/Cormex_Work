@@ -7,6 +7,7 @@ import '../core/widgets/common.dart';
 import '../features/auth/auth_page.dart';
 import '../features/bookings/bookings_page.dart';
 import '../features/dashboard/dashboard_page.dart';
+import '../features/customer/customer_home_page.dart';
 import '../features/onboarding/onboarding_page.dart';
 import '../features/public/landing_page.dart';
 import '../features/public/public_pages.dart';
@@ -21,7 +22,9 @@ final appRouter = GoRouter(
   refreshListenable: di<SessionStore>(),
   redirect: (context, state) {
     final path = state.uri.path;
-    final private = path == '/onboarding' ||
+    final private = path == '/client' || path == '/find' ||
+        path.startsWith('/business/') || path.startsWith('/book/') ||
+        path == '/onboarding' ||
         path == '/my-bookings' ||
         path.startsWith('/app/');
     if (private && !di<SessionStore>().isAuthenticated) {
@@ -40,7 +43,16 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/find',
-      builder: (context, state) => const ConfigurationGate(child: FindPage()),
+      builder: (context, state) => ConfigurationGate(
+        child: FindPage(
+          segmentCode: state.uri.queryParameters['segment'],
+          initialCity: state.uri.queryParameters['city'],
+        ),
+      ),
+    ),
+    GoRoute(
+      path: '/client',
+      builder: (context, state) => const ConfigurationGate(child: CustomerHomePage()),
     ),
     GoRoute(
       path: '/business/:slug',
