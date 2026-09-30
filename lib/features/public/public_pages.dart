@@ -52,6 +52,8 @@ class _BusinessPageState extends State<BusinessPage> {
                     style: Theme.of(context).textTheme.headlineLarge,
                   ),
                   Text('${data['city']} • ${data['state']}'),
+                  if ((data['address']?.toString() ?? '').isNotEmpty)
+                    Text('Atendimento: ${data['address']}'),
                   const SizedBox(height: 12),
                   Text(data['description']?.toString() ?? ''),
                   const SizedBox(height: 28),
@@ -114,16 +116,27 @@ class BookPage extends StatefulWidget {
 class _BookPageState extends State<BookPage> {
   DateTime day = DateTime.now();
   String? selected;
+  String? resourceId;
+  bool resourceRequired = false;
   bool busy = false;
   String? error;
   Map<String, dynamic>? confirmed;
   final key = const Uuid().v4();
-  late Future<Map<String, dynamic>> slots = fetch();
+  late Future<Map<String, dynamic>> options = di<ApiClient>().call(
+    'availability-options', {'workspaceId': widget.workspaceId, 'serviceId': widget.serviceId});
+  late Future<Map<String, dynamic>> slots = options.then((data) {
+    resourceRequired = data['resourceRequired'] == true;
+    final resources = data['resources'] as List? ?? [];
+    if (resourceRequired && resources.isEmpty) return {'slots': []};
+    if (resourceRequired) resourceId = resources.first['id'].toString();
+    return fetch();
+  });
 
   Future<Map<String, dynamic>> fetch() =>
       di<ApiClient>().call('availability-search', {
         'workspaceId': widget.workspaceId,
         'serviceId': widget.serviceId,
+        if (resourceId != null) 'resourceId': resourceId,
         'day': DateFormat('yyyy-MM-dd').format(day),
       });
   void changeDate(DateTime value) => setState(() {
@@ -149,6 +162,7 @@ class _BookPageState extends State<BookPage> {
       final data = await di<ApiClient>().call('bookings-create', {
         'workspaceId': widget.workspaceId,
         'serviceId': widget.serviceId,
+        if (resourceId != null) 'resourceId': resourceId,
         'startAt': selected,
         'idempotencyKey': key,
       });
@@ -172,9 +186,17 @@ class _BookPageState extends State<BookPage> {
           child: PageWidth(
             maxWidth: 760,
             child: confirmed != null
-                ? Notice(
-                    message:
-                        'Reserva confirmada. Protocolo: ${confirmed!['id']}',
+                ? Column(
+                    children: [
+                      Notice(
+                        message:
+                            'Reserva registrada. Protocolo: ${confirmed!['id']}',
+                      ),
+                      TextButton(
+                        onPressed: () => context.go('/my-bookings'),
+                        child: const Text('Ver meus agendamentos'),
+                      ),
+                    ],
                   )
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,6 +211,32 @@ class _BookPageState extends State<BookPage> {
                         'A disponibilidade será verificada novamente ao confirmar.',
                       ),
                       const SizedBox(height: 22),
+                      FutureBuilder<Map<String, dynamic>>(
+                        future: options,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return const Notice(message: 'Recursos indisponíveis. Atualize a página.');
+                          }
+                          final resources = snapshot.data?['resources'] as List? ?? [];
+                          if (!snapshot.hasData || !resourceRequired) {
+                            return const SizedBox.shrink();
+                          }
+                          if (resources.isEmpty) {
+                            return const Notice(message: 'Empresa sem recursos disponíveis para este serviço.');
+                          }
+                          return DropdownButtonFormField<String>(
+                            initialValue: resourceId,
+                            decoration: const InputDecoration(labelText: 'Local ou recurso de atendimento'),
+                            items: [for (final resource in resources)
+                              DropdownMenuItem(value: resource['id'].toString(),
+                                child: Text(resource['name'].toString()))],
+                            onChanged: (value) => setState(() {
+                              resourceId = value; selected = null; slots = fetch();
+                            }),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 12),
                       OutlinedButton.icon(
                         icon: const Icon(Icons.calendar_today),
                         label: Text(DateFormat('dd/MM/yyyy').format(day)),

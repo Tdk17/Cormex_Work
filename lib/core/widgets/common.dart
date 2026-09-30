@@ -84,8 +84,12 @@ class PublicFrame extends StatelessWidget {
                     tooltip: 'Menu',
                     onSelected: (path) => context.go(path),
                     itemBuilder: (context) => [
-                      const PopupMenuItem(
-                          value: '/find', child: Text('Encontrar serviços')),
+                      if (di<SessionStore>().isAuthenticated)
+                        const PopupMenuItem(
+                            value: '/client', child: Text('Meu espaço')),
+                      if (di<SessionStore>().isAuthenticated)
+                        const PopupMenuItem(
+                            value: '/find', child: Text('Encontrar profissionais')),
                       if (di<SessionStore>().isAuthenticated)
                         const PopupMenuItem(
                             value: '/my-bookings',
@@ -93,16 +97,21 @@ class PublicFrame extends StatelessWidget {
                       if (!di<SessionStore>().isAuthenticated)
                         const PopupMenuItem(
                             value: '/login', child: Text('Entrar')),
-                      const PopupMenuItem(
-                          value: '/onboarding', child: Text('Sou empresa')),
+                      if (di<SessionStore>().workspaceId.value == null)
+                        const PopupMenuItem(
+                            value: '/onboarding', child: Text('Sou empresa')),
+                      if (di<SessionStore>().workspaceId.value != null)
+                        const PopupMenuItem(
+                            value: '/app/dashboard', child: Text('Gerenciar empresa')),
                     ],
                   ),
                 ]
               : [
-                  TextButton(
-                    onPressed: () => context.go('/find'),
-                    child: const Text('Encontrar serviços'),
-                  ),
+                  if (di<SessionStore>().isAuthenticated)
+                    TextButton(
+                      onPressed: () => context.go('/client'),
+                      child: const Text('Meu espaço'),
+                    ),
                   if (di<SessionStore>().isAuthenticated)
                     TextButton(
                       onPressed: () => context.go('/my-bookings'),
@@ -114,11 +123,24 @@ class PublicFrame extends StatelessWidget {
                       onPressed: () => context.go('/login'),
                       child: const Text('Entrar'),
                     ),
+                  if (di<SessionStore>().isAuthenticated)
+                    TextButton(
+                      onPressed: () => context.go('/find'),
+                      child: const Text('Encontrar profissionais'),
+                    ),
                   Padding(
                     padding: const EdgeInsets.only(right: 22),
                     child: FilledButton(
-                      onPressed: () => context.go('/onboarding'),
-                      child: const Text('Sou empresa'),
+                      onPressed: () => context.go(
+                        di<SessionStore>().workspaceId.value != null
+                            ? '/app/dashboard'
+                            : '/onboarding',
+                      ),
+                      child: Text(
+                        di<SessionStore>().workspaceId.value != null
+                            ? 'Gerenciar empresa'
+                            : 'Sou empresa',
+                      ),
                     ),
                   ),
                 ],

@@ -17,6 +17,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late Future<Map<String, dynamic>> future = load();
   final name = TextEditingController();
   final description = TextEditingController();
+  final address = TextEditingController();
   bool public = false, initialized = false, busy = false;
   String? error;
   Future<Map<String, dynamic>> load() => di<ApiClient>().call(
@@ -27,6 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void dispose() {
     name.dispose();
     description.dispose();
+    address.dispose();
     super.dispose();
   }
 
@@ -40,6 +42,7 @@ class _SettingsPageState extends State<SettingsPage> {
         'workspaceId': di<SessionStore>().workspaceId.value,
         'name': name.text.trim(),
         'description': description.text.trim(),
+        'address': address.text.trim(),
         'publicProfileEnabled': public,
       });
       if (mounted) {
@@ -83,6 +86,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   initialized = true;
                   name.text = data['name'].toString();
                   description.text = data['description']?.toString() ?? '';
+                  address.text = data['address']?.toString() ?? '';
                   public = data['publicProfileEnabled'] == true;
                 }
                 return Card(
@@ -101,6 +105,14 @@ class _SettingsPageState extends State<SettingsPage> {
                           maxLines: 4,
                           decoration: const InputDecoration(
                             labelText: 'Descrição pública',
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                          controller: address,
+                          decoration: const InputDecoration(
+                            labelText: 'Endereço do atendimento',
+                            hintText: 'Rua, número e bairro',
                           ),
                         ),
                         const SizedBox(height: 12),

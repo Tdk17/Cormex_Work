@@ -4,18 +4,17 @@ Plataforma SaaS multiempresa para agendamento e operação de serviços. Código
 
 ## Estado desta entrega
 
-Primeira fatia funcional: área pública, cadastro e login, criação de empresa, seleção de plano com avaliação configurada no servidor, perfil público, serviços, horários, recursos no backend, disponibilidade, reserva idempotente, transições e painel. O aplicativo não apresenta registros fictícios. Falhas de API aparecem como erro.
+O fluxo do cliente começa em conta autenticada: `/client` reúne categorias e reservas; busca, perfil do profissional e agendamento exigem login. A área da empresa mantém serviços, horários, reservas e painel. O aplicativo não apresenta registros fictícios. Falhas de API aparecem como erro.
 
-O frontend pode ser publicado no GitHub Pages. Sem o novo Back4App configurado, a página inicial abre, mas cadastro, busca e agendamentos aguardam ativação. Equipe e convites, remarcação, relatórios completos, notificações, console da plataforma, exportação LGPD e cobrança com provedor ainda não estão implementados. Veja [escopo e próximos passos](docs/STATUS.md).
+O frontend pode ser publicado no GitHub Pages. A existência das chaves do Parse no build não confirma que as funções Cloud Code estão ativas nem que cadastro e reservas passam de ponta a ponta. A branch de desenvolvimento integra a seleção de cidade por UF no IBGE, ordens de serviço e lançamentos financeiros. O backend correspondente fica em [BancoWorckk](https://github.com/Tdk17/BancoWorckk). Veja a [arquitetura do produto](docs/PRODUCT_ARCHITECTURE.md).
 
 ## Estrutura
 
 - lib/: Flutter Web responsivo, get_it, go_router e signals.
-- cloud/: Cloud Functions Parse, validação, papéis, isolamento, rate limit e lock distribuído Redis.
-- cloud/config/segments.json: definições iniciais reais de lavação, oficina e beleza.
+- BancoWorckk/cloud/feature/: fonte única das funções Parse; BancoWorckk/cloud/main.js é o arquivo gerado para o Back4App.
 - docs/SETUP.md: configuração separada de Back4App, Redis, planos, CLPs e build.
 - docs/API.md: funções implementadas e contratos.
-- .github/workflows/ci.yml: análise Flutter e testes do Cloud Code.
+- .github/workflows/ci.yml: análise e build Flutter. A validação da API ocorre no BancoWorckk.
 - .github/workflows/pages.yml: build Flutter e publicação no GitHub Pages após push em main.
 
 ## GitHub Pages
@@ -26,10 +25,9 @@ Quando o novo backend estiver pronto, configure no repositório em **Settings �
 
 ## Desenvolvimento
 
-Flutter SDK estável e Node 18+:
+Flutter SDK estável:
 
-    cd cloud && npm ci && npm test && npm run check
-    cd .. && flutter pub get && flutter analyze
+    flutter pub get && flutter analyze && flutter build web --release
 
 O build exige dados **públicos** do novo app Parse, versões e URLs dos documentos jurídicos:
 

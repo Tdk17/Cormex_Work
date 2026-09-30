@@ -3,11 +3,15 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/theme.dart';
 import '../../core/di/registry.dart';
+import '../../core/location/location_picker.dart';
 import '../../core/network/api_client.dart';
 import '../../core/widgets/common.dart';
 
 class FindPage extends StatefulWidget {
-  const FindPage({super.key});
+  const FindPage({super.key, this.segmentCode, this.initialCity, this.initialState});
+  final String? segmentCode;
+  final String? initialCity;
+  final String? initialState;
 
   @override
   State<FindPage> createState() => _FindPageState();
@@ -17,14 +21,26 @@ class _FindPageState extends State<FindPage> {
   final city = TextEditingController();
   late Future<Map<String, dynamic>> segments =
       di<ApiClient>().call('segments-list');
-  late Future<Map<String, dynamic>> results = search();
+  late Future<Map<String, dynamic>> results;
   String? segment;
+  String? selectedState;
   final List<dynamic> accumulated = [];
+
+  @override
+  void initState() {
+    super.initState();
+    segment = widget.segmentCode;
+    city.text = widget.initialCity ?? '';
+    selectedState = widget.initialState;
+    results = search();
+  }
 
   Future<Map<String, dynamic>> search([String? cursor]) =>
       di<ApiClient>().call('discovery-search', {
         if (segment != null) 'segmentCode': segment,
         if (city.text.trim().isNotEmpty) 'city': city.text.trim(),
+        if (selectedState != null && selectedState!.isNotEmpty)
+          'state': selectedState!,
         if (cursor != null) 'cursor': cursor,
       });
 
@@ -60,7 +76,7 @@ class _FindPageState extends State<FindPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'DESCUBRA EMPRESAS',
+                          'SUA REDE DE PROFISSIONAIS',
                           style: TextStyle(
                             color: CormexTheme.sage,
                             fontSize: 11,
@@ -78,7 +94,7 @@ class _FindPageState extends State<FindPage> {
                         ),
                         const SizedBox(height: 10),
                         const Text(
-                          'Explore empresas por segmento e cidade. '
+                          'Explore profissionais por segmento e cidade. '
                           'Escolha com tranquilidade e reserve no horário disponível.',
                           style: TextStyle(
                             color: Color(0xFFC6D7D3),
@@ -177,17 +193,14 @@ class _FindPageState extends State<FindPage> {
                                     ),
                                     SizedBox(
                                       width: fieldWidth,
-                                      child: TextField(
-                                        controller: city,
-                                        textInputAction: TextInputAction.search,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Cidade',
-                                          hintText: 'Digite sua cidade',
-                                          prefixIcon: Icon(
-                                            Icons.location_on_outlined,
-                                          ),
-                                        ),
-                                        onSubmitted: (_) => reload(),
+                                      child: LocationPicker(
+                                        initialState: selectedState,
+                                        initialCity: city.text,
+                                        onChanged: (state, name, id) {
+                                          selectedState = state;
+                                          city.text = name;
+                                          reload();
+                                        },
                                       ),
                                     ),
                                   ],
@@ -232,7 +245,7 @@ class _FindPageState extends State<FindPage> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Resultados públicos de empresas cadastradas.',
+                      'Escolha um profissional para ver os serviços e horários.',
                       style: TextStyle(color: CormexTheme.muted),
                     ),
                     const SizedBox(height: 18),
@@ -269,6 +282,7 @@ class _FindPageState extends State<FindPage> {
                             action: 'Limpar filtros',
                             onPressed: () {
                               city.clear();
+                              selectedState = null;
                               segment = null;
                               reload();
                             },

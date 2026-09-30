@@ -69,13 +69,10 @@ class _AuthPageState extends State<AuthPage> {
         await di<SessionStore>().login(email.text.trim(), password.text);
         if (!mounted) return;
         final from = widget.from;
-        final hasWorkspace = di<SessionStore>().workspaceId.value != null;
         context.go(
           from != null && from.startsWith('/') && !from.startsWith('//')
               ? from
-              : hasWorkspace
-                  ? '/app/dashboard'
-                  : '/my-bookings',
+              : '/client',
         );
       }
     } catch (e) {
@@ -202,7 +199,7 @@ class _AuthPageState extends State<AuthPage> {
                       ],
                       if (registering) ...[
                         const SizedBox(height: 12),
-                        if (!AppConfig.canRegister)
+                        if (!AppConfig.legalDocumentsPublished)
                           Container(
                             padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(
@@ -218,13 +215,13 @@ class _AuthPageState extends State<AuthPage> {
                                 SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
-                                    'O cadastro será liberado após a publicação dos Termos e do Aviso de Privacidade.',
+                                    'Ambiente de teste: os documentos definitivos ainda não foram publicados. O aceite será registrado com a versão provisória.',
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        if (AppConfig.canRegister) ...[
+                        if (AppConfig.legalDocumentsPublished)
                           Wrap(
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
@@ -240,17 +237,18 @@ class _AuthPageState extends State<AuthPage> {
                               ),
                             ],
                           ),
-                          CheckboxListTile(
-                            value: accepted,
-                            onChanged: (v) =>
-                                setState(() => accepted = v ?? false),
-                            title: const Text(
-                              'Li e aceito os Termos e o Aviso de Privacidade',
-                            ),
-                            contentPadding: EdgeInsets.zero,
-                            controlAffinity: ListTileControlAffinity.leading,
+                        CheckboxListTile(
+                          value: accepted,
+                          onChanged: (v) =>
+                              setState(() => accepted = v ?? false),
+                          title: Text(
+                            AppConfig.legalDocumentsPublished
+                                ? 'Li e aceito os Termos e o Aviso de Privacidade'
+                                : 'Estou de acordo em testar o Cormex Work',
                           ),
-                        ],
+                          contentPadding: EdgeInsets.zero,
+                          controlAffinity: ListTileControlAffinity.leading,
+                        ),
                       ],
                       if (error != null) ...[
                         const SizedBox(height: 12),
@@ -302,17 +300,17 @@ class _AuthPageState extends State<AuthPage> {
                       const SizedBox(height: 8),
                       const Divider(),
                       const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 12,
+                        runSpacing: 8,
                         children: [
-                          Flexible(
-                            child: Text(
-                              registering
-                                  ? 'Já faz parte do Cormex Work?'
-                                  : 'Ainda não tem conta?',
-                              style:
-                                  const TextStyle(color: CormexTheme.muted),
-                            ),
+                          Text(
+                            registering
+                                ? 'Já faz parte do Cormex Work?'
+                                : 'Ainda não tem conta?',
+                            style: const TextStyle(color: CormexTheme.muted),
                           ),
                           OutlinedButton(
                             onPressed: () => context.go((registering
@@ -332,7 +330,7 @@ class _AuthPageState extends State<AuthPage> {
                             ),
                           ),
                         ],
-                        ),
+                      ),
                     ],
                   ),
                 ),
