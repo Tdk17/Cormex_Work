@@ -199,7 +199,7 @@ class _AuthPageState extends State<AuthPage> {
                       ],
                       if (registering) ...[
                         const SizedBox(height: 12),
-                        if (!AppConfig.canRegister)
+                        if (!AppConfig.legalDocumentsPublished)
                           Container(
                             padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(
@@ -215,13 +215,13 @@ class _AuthPageState extends State<AuthPage> {
                                 SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
-                                    'O cadastro será liberado após a publicação dos Termos e do Aviso de Privacidade.',
+                                    'Ambiente de teste: os documentos definitivos ainda não foram publicados. O aceite será registrado com a versão provisória.',
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        if (AppConfig.canRegister) ...[
+                        if (AppConfig.legalDocumentsPublished)
                           Wrap(
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
@@ -237,17 +237,18 @@ class _AuthPageState extends State<AuthPage> {
                               ),
                             ],
                           ),
-                          CheckboxListTile(
-                            value: accepted,
-                            onChanged: (v) =>
-                                setState(() => accepted = v ?? false),
-                            title: const Text(
-                              'Li e aceito os Termos e o Aviso de Privacidade',
-                            ),
-                            contentPadding: EdgeInsets.zero,
-                            controlAffinity: ListTileControlAffinity.leading,
+                        CheckboxListTile(
+                          value: accepted,
+                          onChanged: (v) =>
+                              setState(() => accepted = v ?? false),
+                          title: Text(
+                            AppConfig.legalDocumentsPublished
+                                ? 'Li e aceito os Termos e o Aviso de Privacidade'
+                                : 'Estou de acordo em testar o Cormex Work',
                           ),
-                        ],
+                          contentPadding: EdgeInsets.zero,
+                          controlAffinity: ListTileControlAffinity.leading,
+                        ),
                       ],
                       if (error != null) ...[
                         const SizedBox(height: 12),
@@ -377,113 +378,3 @@ class _AuthIntro extends StatelessWidget {
   const _AuthIntro({this.compact = false});
 
   final bool compact;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(compact ? 28 : 42),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [CormexTheme.deep, CormexTheme.petroleum],
-          ),
-          borderRadius: BorderRadius.circular(22),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 46,
-              height: 46,
-              decoration: BoxDecoration(
-                color: const Color(0xFF2A6259),
-                borderRadius: BorderRadius.circular(13),
-              ),
-              child: const Icon(
-                Icons.grid_view_rounded,
-                color: CormexTheme.sage,
-              ),
-            ),
-            SizedBox(height: compact ? 34 : 95),
-            const Text(
-              'BEM-VINDO AO CORMEX WORK',
-              style: TextStyle(
-                color: CormexTheme.sage,
-                fontSize: 11,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 1.6,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text.rich(
-              const TextSpan(
-                children: [
-                  TextSpan(text: 'Sua operação,\n'),
-                  TextSpan(
-                    text: 'mais simples.',
-                    style: TextStyle(color: CormexTheme.sage),
-                  ),
-                ],
-              ),
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: compact ? 36 : 43,
-                fontWeight: FontWeight.w800,
-                height: 1.1,
-                letterSpacing: -1.3,
-              ),
-            ),
-            const SizedBox(height: 19),
-            const Text(
-              'Entre para organizar serviços, horários e reservas '
-              'em um só espaço.',
-              style: TextStyle(
-                color: Color(0xFFC6D8D3),
-                fontSize: 16,
-                height: 1.55,
-              ),
-            ),
-            if (!compact) ...[
-              const SizedBox(height: 48),
-              const Divider(color: Color(0xFF456762)),
-              const SizedBox(height: 20),
-              const _AuthBenefit(
-                icon: Icons.calendar_month_outlined,
-                text: 'Agenda organizada para sua rotina',
-              ),
-              const SizedBox(height: 17),
-              const _AuthBenefit(
-                icon: Icons.storefront_outlined,
-                text: 'Serviços apresentados com clareza',
-              ),
-              const SizedBox(height: 17),
-              const _AuthBenefit(
-                icon: Icons.groups_outlined,
-                text: 'Equipe no mesmo fluxo de trabalho',
-              ),
-            ],
-          ],
-        ),
-      );
-}
-
-class _AuthBenefit extends StatelessWidget {
-  const _AuthBenefit({required this.icon, required this.text});
-  final IconData icon;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Row(
-        children: [
-          Icon(icon, size: 21, color: CormexTheme.sage),
-          const SizedBox(width: 13),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(color: Color(0xFFE1ECE8)),
-            ),
-          ),
-        ],
-      );
-}
